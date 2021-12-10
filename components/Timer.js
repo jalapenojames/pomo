@@ -155,8 +155,8 @@ const Timer = ({ animation, resetAnimation, animatedValSecond, animatedValue }) 
                 <TouchableOpacity onPress={stopTimer} activeOpacity={0.8} style={[styles.button, {marginRight: 5, backgroundColor: 'salmon'}]}>
                     <Text style={{color: 'black'}}>stop</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={resetTimer} activeOpacity={0.8} style={[styles.button, {backgroundColor: 'white'}]}>
-                    <Text style={{color: 'black'}}>reset</Text>
+                <TouchableOpacity onPress={resetTimer} activeOpacity={0.8} style={[styles.button, {backgroundColor: '#023e8a'}]}>
+                    <Text style={{color: 'white'}}>reset</Text>
                 </TouchableOpacity>
             </View>
 
