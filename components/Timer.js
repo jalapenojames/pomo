@@ -33,10 +33,6 @@ const Timer = ({ animation, resetAnimation, animatedValSecond, animatedValue }) 
 
     const [secondsLeft, setSecondsLeft] = useState(60*25)
 
-    const [seconds,setSeconds] = useState(0)
-    const [minutes, setMinutes] = useState(0)
-    const [hours, setHours] = useState(0)
-
     const [isUpdate, setIsUpdate] = useState(false)
     const [isRunning, setIsRunning] = useState(false);
     const [watch, setWatch] = useState([0,0,0])
@@ -83,21 +79,6 @@ const Timer = ({ animation, resetAnimation, animatedValSecond, animatedValue }) 
         }
 
         resetAnimation()
-    }
-
-    const minus = (a, b) => {   // where a,b are [hr,min,sec], and a is greater or "later" time than b
-        a = [1,2,3]; 
-        b = [0,0,5];
-
-        // convert a,b to seconds, take difference
-        const aTimeInSeconds = clockToSeconds(a)
-        const bTimeInSeconds = clockToSeconds(b)
-
-        const diff = aTimeInSeconds-bTimeInSeconds
-        console.log("a-b is "+aTimeInSeconds+"-"+bTimeInSeconds, aTimeInSeconds-bTimeInSeconds)
-        const result = secondsToClock(diff)
-
-        return result
     }
 
     const minusFullDate = (a,b) => { // where a is a later time than b
@@ -168,24 +149,19 @@ const Timer = ({ animation, resetAnimation, animatedValSecond, animatedValue }) 
                         : 
                             '00:00:00'
                     }
-                    {/* {console.log(`${watch[0]}:${watch[1]}:${watch[2]}`)}
-                    {console.log(`${start[0]}:${start[1]}:${start[2]}`)} */}
                 </Text>
             </View>
 
             <View style={[styles.countContainer, styles.center]}>
                 <Text>Timer</Text>
-                {/* <Text style={styles.count}>{count[0]+":"+count[1]+":"+count[2]}</Text> */}
-                {
-                    <Text style={styles.count}>
-                        {
+                <Text style={styles.count}>
+                    {
                         watchDate? 
                             Math.trunc((secondsLeft-minusFullDateSeconds(watchDate,startDate))/60)
                             :
                             Math.trunc(secondsLeft/60)
-                        }
-                    </Text>
-                }
+                    }
+                </Text>
             </View>
 
             <View style={[styles.countContainer, styles.center, {justifyContent: 'space-around'}]}>
