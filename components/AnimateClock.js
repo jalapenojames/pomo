@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, Animated, Image, Easing} from 'react-nati
 import Timer from './Timer'
 
 export default function AnimateClock() {
+    const [color, setColor] = React.useState('tomato')
+
     const LeftHalf = ({color, diameter}) => (
         <View style={{height: diameter/2, width: diameter, overflow: 'hidden', transformOrigin: 'center bottom', transform: [{rotate: "-90deg"}], marginBottom: diameter/2}}>
             <Animated.View style={{height: diameter/2, width: diameter, overflow: 'hidden', backgroundColor: 'transparent', position: 'relative', transformOrigin: 'center bottom', transform: [
@@ -69,26 +71,32 @@ export default function AnimateClock() {
         animatedValSecond.setValue(0)
     }
 
+    const PomoClock = () =>
+        <TouchableOpacity style={{position: 'relative'}} activeOpacity={0.8}>
+            <View style={{position: 'relative', paddingTop: 10}}>
+                {/* {Left half of circle} */}   
+                <LeftHalf2nd color={color} diameter={300}/>
+                {/* {Right half of circle} */}  
+                <View style={{position: 'absolute', top: 10, transformOrigin: 'center center', transform: [{rotate: '180deg'}]}}>
+                    <LeftHalf color={color} diameter={300}/>
+                </View>
+
+                {/* {Centerpiece} */}   
+                <View style={{height: 100, width: 100, borderRadius: 50, backgroundColor: "bisque", position: 'absolute', top: 100, left: 100, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{fontStyle: 'italic'}}>focus</Text>
+                </View>
+            </View>
+        </TouchableOpacity>
+
     return (
         <>
-            <Timer animation={animation} resetAnimation={resetAnimation} animatedValSecond={animatedValSecond} animatedValue={animatedValue} />
-
-            <View style={{height: 100, width: 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
-                <TouchableOpacity onPress={resetAnimation} activeOpacity={0.8} style={{borderRadius: 5, backgroundColor: '#8cc084', height: 20, width: 25, marginLeft: 2}}/>
+            <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5}}>
+                <Timer timer={1} color={color} setColor={setColor} animation={animation} resetAnimation={resetAnimation} animatedValSecond={animatedValSecond} animatedValue={animatedValue}/>
             </View>
-            <TouchableOpacity style={{position: 'relative'}} activeOpacity={0.8}>
 
-                <View style={{position: 'relative', paddingTop: 10}}>
-                    {/* {Left half of circle} */}   <LeftHalf2nd color="tomato" diameter={300}/>
-                    {/* {Right half of circle} */}  <View style={{position: 'absolute', top: 10, transformOrigin: 'center center', transform: [{rotate: '180deg'}]}}>
-                        <LeftHalf color="tomato" diameter={300}/>
-                    </View>
-
-                    {/* {Centerpiece} */}   <View style={{height: 100, width: 100, borderRadius: 50, backgroundColor: "bisque", position: 'absolute', top: 100, left: 100, justifyContent: 'center', alignItems: 'center'}}>
-                        <Text style={{fontStyle: 'italic'}}>focus</Text>
-                    </View>
-                </View>
-            </TouchableOpacity>
+            <View style={{borderWidth: 1, justifyContent: 'center', alignItems: 'center', padding: 10, borderRadius: 5}}>
+                <PomoClock />
+            </View>
        </>
     )
 }

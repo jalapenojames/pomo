@@ -1,37 +1,12 @@
 import React, { useState, useRef, useEffect, } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native'
 
-const RightHalf = ({color, degrees}) => (
-    <View style={{marginTop: 10, borderWidth: 0, height: 101}}>
-        <View style={{transformOrigin: 'center bottom',transform: 'rotate(-90deg)',}}>
-            <View style={{position: 'relative', transformOrigin: 'center bottom', transform: 'rotate(0deg)'}}>
-                <SemiCircle color={color}/>
-            </View>
-            <View style={{position: 'absolute', transformOrigin: "center bottom",transform: [{rotate: `${degrees+180}deg`}]}}>
-                <SemiCircle color={color}/>
-            </View>
-        </View>
-    </View>        
-)
-
-const LeftHalf = () => {
-    <View style={{height: 50, width: 100, overflow: 'hidden', transformOrigin: 'center bottom', transform: [{rotate: "-90deg"}], marginBottom: 50}}>
-        <View style={{height: 50, width: 100, overflow: 'hidden', backgroundColor: 'transparent', position: 'relative', transformOrigin: 'center bottom', transform: [{rotate: "0deg"}]}}>
-            <View style={{height: 100, width: 100, backgroundColor: 'green', marginTop: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50, }}/>
-        </View> 
-    </View>
-}
-
-const SemiCircle = ({color}) => (
-    <View style={{height: 50, width: 100, overflow: 'hidden', backgroundColor: 'transparent', position: 'relative'}}>
-        <View style={{position: 'absolute', height: 100, width: 100, backgroundColor: color, marginTop: 0, borderTopLeftRadius: 50, borderTopRightRadius: 50}}/>
-    </View>        
-)
-
-const Timer = ({ animation, resetAnimation, animatedValSecond, animatedValue }) => {
+const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValSecond, animatedValue }) => {
     const [count, setCount] = useState([0,1,0])
 
-    const [secondsLeft, setSecondsLeft] = useState(60*25)
+    const [secondsLeft, setSecondsLeft] = useState(60*timer)
+    const [sideEffect, setSideEffect] = useState(false)
+    const firstUpdate = useRef(true)
 
     const [isUpdate, setIsUpdate] = useState(false)
     const [isRunning, setIsRunning] = useState(false);
@@ -126,6 +101,34 @@ const Timer = ({ animation, resetAnimation, animatedValSecond, animatedValue }) 
         return strArr.join(":")
     }
 
+    useEffect(()=>{
+        if(!firstUpdate.current) {
+            console.log('Side effect activated, seconds left is: ', secondsLeft)
+            startTimer()
+        }
+    }, [sideEffect])
+
+    useEffect(()=>{
+        firstUpdate.current = false
+    },[])
+
+    const ResetButton = () => 
+        <View style={{height: 100, width: 100, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+            <TouchableOpacity onPress={resetTimer} activeOpacity={0.8} style={{borderRadius: 5, backgroundColor: '#8cc084', height: 20, width: 25, marginLeft: 2}}/>
+        </View>
+
+    const TaskButtons = () =>
+        <View style={{height: 100, width: 200, justifyContent: 'space-around', alignItems: 'center', borderWidth: 1, borderRadius: 5, margin: 10}}>
+            <TouchableOpacity activeOpacity={0.8} onPress={()=>{setSecondsLeft(60*25); setColor('tomato'); setSideEffect(!sideEffect)}} style={{height: 30, width: 120, borderRadius: 5, backgroundColor: 'teal', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+                <Text style={{backgroundColor: 'white', height: 15, width: 50, textAlign: 'center', textAlignVertical: 'center', fontStyle: 'italic', borderRadius: 3}}>focus</Text>
+                <Text style={{backgroundColor: 'white', height: 15, width: 20, textAlign: 'center', textAlignVertical: 'center', borderRadius: 3}}>25</Text>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} onPress={()=>{setSecondsLeft(60*10); setColor('#a4ac86'); setSideEffect(!sideEffect)}} style={{height: 30, width: 120, borderRadius: 5, backgroundColor: 'green', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+                <Text style={{backgroundColor: 'white', height: 15, width: 50, textAlign: 'center', textAlignVertical: 'center', fontStyle: 'italic', borderRadius: 3}}>rest</Text>
+                <Text style={{backgroundColor: 'white', height: 15, width: 20, textAlign: 'center', textAlignVertical: 'center', borderRadius: 3}}>10</Text>
+            </TouchableOpacity>
+        </View>
+
     return (
         <>
         <View style={styles.timerContainer}>
@@ -171,6 +174,13 @@ const Timer = ({ animation, resetAnimation, animatedValSecond, animatedValue }) 
 
         </View>
 
+        <View style={styles.center}>
+            <ResetButton />
+        </View>
+
+        <View style={styles.center}>
+            <TaskButtons />
+        </View>
 
 
         { // this section stops the clock when timer reaches 0
@@ -187,8 +197,6 @@ const Timer = ({ animation, resetAnimation, animatedValSecond, animatedValue }) 
 }
 
 export default Timer
-
-export { RightHalf, SemiCircle }
 
 const styles = StyleSheet.create({
     countContainer: {
