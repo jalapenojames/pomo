@@ -1,12 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react'
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import React, { useRef } from 'react'
+import { StyleSheet, Text, View, Pressable, Animated, PanResponder } from 'react-native';
 import AnimateClock from './AnimateClock'
 import Timer from './Timer'
 
 export default function Pomo() {
+    const pan = useRef(new Animated.ValueXY()).current
+    const panResponder = useRef(
+        PanResponder.create({
+            // onStartShouldSetPanResponder: () => true,
+            onMoveShouldSetPanResponder: () => true,
+            onPanResponderGrant: () => {
+                pan.setOffset({
+                    x: pan.x._value,
+                    y: pan.y._value
+                })
+            },
+            onPanResponderMove: Animated.event(
+                [
+                    null,
+                    { dx: pan.x, dy: pan.y }
+                ],
+                {useNativeDriver: false}
+            ),
+            onPanResponderRelease: () => {
+                pan.flattenOffset()
+            }
+        })
+    ).current
 
     const [persp, setPersp] = React.useState(600)
+    const [transf, setTransf] = React.useState([{translateZ: -100},{rotateX: '20deg'}])
 
     const styles = StyleSheet.create({
         container: {
@@ -47,6 +71,8 @@ export default function Pomo() {
         }
       });
 
+      //{ transform: translateZ(-100px) rotateX(-90deg); }
+
     return (
         <>
             <View style={[styles.container,{flexDirection: 'row', justifyContent: 'space-around'}]}>
@@ -56,7 +82,7 @@ export default function Pomo() {
                     <StatusBar style="auto" />
                 </View>
                 <View style={styles.scene}>
-                    <View style={styles.cube}>
+                    <View style={[styles.cube, {transform: transf}]}>
                         <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 100}]}, {backgroundColor: 'pink', opacity: 0.8}]}><Text style={styles.cubeText}>front</Text></View>
                         <View style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'lightgreen', opacity: 0.8}]}><Text style={styles.cubeText}>back</Text></View>
                         <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 100}]}, {backgroundColor: 'gold', opacity: 0.8}]}><Text style={styles.cubeText}>right</Text></View>
@@ -65,8 +91,17 @@ export default function Pomo() {
                         <View style={[styles.cubeFace, {transform: [{rotateX: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'hotpink', opacity: 0.8}]}><Text style={styles.cubeText}>bottom</Text></View>
                     </View>
                 </View>
+
+                <View style={{height: 400, width: 400, borderRadius: 10, justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <Animated.View style={{ transform: [{translateX: pan.x},{translateY: pan.y}]}} {...panResponder.panHandlers}>
+                            <View style={{height: 100, width: 100, backgroundColor: 'red', borderRadius: 5}}></View>
+                        </Animated.View>
+                    </View>
+                </View>
                 
-                <Pressable onPress={()=>setPersp(persp => {console.log(persp); return persp+200})} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable>
+                {/* <Pressable onPress={()=>setPersp(persp => {console.log(persp); return persp+200})} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable> */}
+                <Pressable onPress={()=>setTransf([{translateZ: -100},{rotateX: '90deg'}])} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable>
             </View>
         </>
     )
