@@ -3,6 +3,8 @@ import React, { useRef } from 'react'
 import { StyleSheet, Text, View, Pressable, Animated, PanResponder } from 'react-native';
 import AnimateClock from './AnimateClock'
 import Timer from './Timer'
+import CubeView from './CubeView'
+import ClockView from './ClockView'
 
 export default function Pomo() {
     const pan = useRef(new Animated.ValueXY()).current
@@ -81,9 +83,9 @@ export default function Pomo() {
                     <AnimateClock />
                     <StatusBar style="auto" />
                 </View>
-                <View style={styles.scene}>
+                {/* <View style={styles.scene}>
                     {console.log(pan.y)}
-                    <Animated.View style={[styles.cube, {transform: [/*transf,*/ {translateZ: -100}, {rotateY: `${25}deg`}]}]} {...panResponder.panHandlers}>
+                    <Animated.View style={[styles.cube, {transform: [{translateZ: -100}, {rotateY: `${25}deg`}]}]} {...panResponder.panHandlers}>
                         <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 100}]}, {backgroundColor: 'pink', opacity: 0.8}]}><Text style={styles.cubeText}>front</Text></View>
                         <View style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'lightgreen', opacity: 0.8}]}><Text style={styles.cubeText}>back</Text></View>
                         <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 100}]}, {backgroundColor: 'gold', opacity: 0.8}]}><Text style={styles.cubeText}>right</Text></View>
@@ -91,18 +93,22 @@ export default function Pomo() {
                         <View style={[styles.cubeFace, {transform: [{rotateX: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'dodgerblue', opacity: 0.8}]}><Text style={styles.cubeText}>top</Text></View>
                         <View style={[styles.cubeFace, {transform: [{rotateX: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'hotpink', opacity: 0.8}]}><Text style={styles.cubeText}>bottom</Text></View>
                     </Animated.View>
-                </View>
+                </View> */}
 
-                <View style={{height: 400, width: 400, borderRadius: 10, justifyContent: 'center', alignItems: 'center'}}>
+                <CubeView />
+
+                <ClockView />
+
+                {/* <View style={{height: 400, width: 400, borderRadius: 10, justifyContent: 'center', alignItems: 'center'}}>
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                         <Animated.View style={{ transform: [{translateX: pan.x},{translateY: pan.y}]}} {...panResponder.panHandlers}>
                             <View style={{height: 100, width: 100, backgroundColor: 'red', borderRadius: 5}}></View>
                         </Animated.View>
                     </View>
-                </View>
+                </View> */}
                 
                 {/* <Pressable onPress={()=>setPersp(persp => {console.log(persp); return persp+200})} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable> */}
-                <Pressable onPress={()=>setTransf([{translateZ: -100},{rotateX: '90deg'}])} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable>
+                {/* <Pressable onPress={()=>setTransf([{translateZ: -100},{rotateX: '90deg'}])} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable> */}
             </View>
         </>
     )
