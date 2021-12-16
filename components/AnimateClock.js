@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Text, TouchableOpacity, Animated, Image, Easing} from 'react-native'
 import Timer from './Timer'
 
-export default function AnimateClock() {
+const AnimateClock = () => {
     const [color, setColor] = React.useState('tomato')
 
     const LeftHalf = ({color, diameter}) => (
@@ -100,3 +100,5 @@ export default function AnimateClock() {
        </>
     )
 }
+
+export default AnimateClock

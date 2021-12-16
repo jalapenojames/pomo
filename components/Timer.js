@@ -24,6 +24,7 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
         setWatchDate(rn)
 
         animation(Math.trunc(secondsLeft/60)).start()
+        // console.log(animation(1))
         
        if (!isRunning) {
           setIsRunning(true);
