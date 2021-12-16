@@ -140,16 +140,19 @@ const styles = {
   
     render() {
       return (
-        <View style={styles.scene} {...this.panResponder.panHandlers} >
-          <View ref={component => this.refView = component} style={styles.cube}>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 100}]}, {backgroundColor: 'pink', opacity: 0.8}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'lightgreen', opacity: 0.8}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 100}]}, {backgroundColor: 'gold', opacity: 0.8}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'skyblue', opacity: 0.8}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateX: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'dodgerblue', opacity: 0.8}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateX: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'hotpink', opacity: 0.8}]}></View>
-          </View>
-        </View>
+          <>
+            <View style={styles.scene} {...this.panResponder.panHandlers} >
+            <View ref={component => this.refView = component} style={styles.cube}>
+                <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 100}]}, {backgroundColor: 'pink', opacity: 0.8}]}></View>
+                <View style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'lightgreen', opacity: 0.8}]}></View>
+                <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 100}]}, {backgroundColor: 'gold', opacity: 0.8}]}></View>
+                <View style={[styles.cubeFace, {transform: [{rotateY: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'skyblue', opacity: 0.8}]}></View>
+                <View style={[styles.cubeFace, {transform: [{rotateX: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'dodgerblue', opacity: 0.8}]}></View>
+                <View style={[styles.cubeFace, {transform: [{rotateX: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'hotpink', opacity: 0.8}]}></View>
+            </View>
+            </View>
+          </>
+        
       );
     }
   }

@@ -1,55 +1,121 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View, Pressable, Animated, PanResponder } from 'react-native';
+import React, { Component, createRef } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Pressable, Animated, PanResponder, Easing } from 'react-native'
+import Timer from './Timer'
 
-const styles = {
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    rotateView: {
-      width: 100,
-      height: 100,
-      backgroundColor: 'pink',
-      shadowOffset: {height: 1, width: 1},
-      shadowOpacity: 0.2
-    },
-    scene: {
-        height: 200, 
-        width: 200, 
-        perspective: 600,
-        borderWidth: 1, borderColor: '#CCC', 
-        margin: 80,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },  
-    cube: {
-        height: 200, // or try '100%'
-        width: 200,
-        position: 'relative',
-        // backgroundColor: 'gold',
-        transformStyle: 'preserve-3d',
-        transform: [{translateZ: -100}],
-        transition: {transform: '1s'}
-    },
-    cubeFace: {
-        position: 'absolute',
-        height: 200,
-        width: 200,
-        borderWidth: 2, alignItems: 'center', justifyContent: 'center'
-    },
-    cubeText: {
-        fontSize: 40, fontWeight: 'bold',
-        color: 'white', lineHeight: 200// backgroundColor: 'orange',
+export default class ClockView extends Component {
+    animatedValue = new Animated.Value(0)
+    animatedValSecond = new Animated.Value(0)
+
+    state = {
+        numberOfSides: 22,
+        color: 'tomato'
     }
-}
-  
-  export default class ClockView extends Component {
+        
+        
+    /////////////// ▾▾ Animate Clock things go here ▾▾ //////////////////////
+    // constructor(props) {
+    //     super(props)
+
+    //     this.animatedValue = new Animated.Value(0)
+    //     this.animatedValSecond = new Animated.Value(0)
+    // }
+
+    LeftHalf({color, diameter}) {
+        return (
+            <View style={{height: diameter/2, width: diameter, overflow: 'hidden', transformOrigin: 'center bottom', transform: [{rotate: "-90deg"}], marginBottom: diameter/2}}>
+                <Animated.View style={{height: diameter/2, width: diameter, overflow: 'hidden', backgroundColor: 'transparent', position: 'relative', transformOrigin: 'center bottom', transform: [
+                    {
+                        rotate: this.animatedValue.interpolate({
+                            inputRange: [0,0.5,1],
+                            outputRange: ['0deg', '90deg', '180deg']
+                        })
+                    }
+                ]}}>
+                    <View style={{height: diameter, width: diameter, backgroundColor: color, marginTop: 0, borderTopLeftRadius: diameter/2, borderTopRightRadius: diameter/2, }}/>
+                </Animated.View> 
+            </View>    
+        )
+    }
+
+    LeftHalf2nd({color, diameter}) {
+        return (
+            <View style={{height: diameter/2, width: diameter, overflow: 'hidden', transformOrigin: 'center bottom', transform: [{rotate: "-90deg"}], marginBottom: diameter/2}}>
+                <Animated.View style={{height: diameter/2, width: diameter, overflow: 'hidden', backgroundColor: 'transparent', position: 'relative', transformOrigin: 'center bottom', transform: [
+                    {
+                        rotate: this.animatedValSecond.interpolate({
+                            inputRange: [0,0.5,1],
+                            outputRange: ['0deg', '90deg', '180deg']
+                        })
+                    }
+                ]}}>
+                    <View style={{height: diameter, width: diameter, backgroundColor: color, marginTop: 0, borderTopLeftRadius: diameter/2, borderTopRightRadius: diameter/2, }}/>
+                </Animated.View> 
+            </View>            
+        )
+    }
+
+    animation(min) {
+        return (
+            Animated.sequence([
+                Animated.timing(this.animatedValue, {
+                    toValue: 1,
+                    duration: min*30000,
+                    useNativeDriver: false,
+                    easing: Easing.linear
+                }),
+                Animated.timing(this.animatedValSecond, { // can make it sequential if I make a new animatedValue2 to be reference
+                    toValue: 1,
+                    duration: min*30000,
+                    useNativeDriver: false,
+                    easing: Easing.linear
+                }),
+                Animated.timing(this.animatedValue, {
+                    toValue: 0,
+                    duration: 0,
+                    useNativeDriver: false,
+                    easing: Easing.linear
+                }),
+                Animated.timing(this.animatedValSecond, { // can make it sequential if I make a new animatedValue2 to be reference
+                    toValue: 0,
+                    duration: 0,
+                    useNativeDriver: false,
+                    easing: Easing.linear
+                }),
+            ])            
+        )
+    }
+
+    resetAnimation() {
+        this.animatedValue.setValue(0); 
+        this.animatedValSecond.setValue(0)        
+    }
+
+    PomoClock() {
+        return (
+            <TouchableOpacity style={{position: 'relative', top: -5}} activeOpacity={0.8}>
+                <View style={{position: 'relative', paddingTop: 10}}>
+                    {/* {Left half of circle} */}   
+                    {this.LeftHalf2nd({color: this.state.color, diameter: 200})}
+                    {/* {Right half of circle} */}  
+                    <View style={{position: 'absolute', top: 10, transformOrigin: 'center center', transform: [{rotate: '180deg'}]}}>
+                        {this.LeftHalf({color: this.state.color, diameter: 200})}
+                    </View>
+
+                    {/* {Centerpiece} */}   
+                    <View style={{height: 70, width: 70, borderRadius: 35, backgroundColor: "bisque", position: 'absolute', top: 65, left: 65, justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{fontStyle: 'italic'}}>focus</Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    /////////////// ^^ Animate Clock things go here ^^ //////////////////////
+
     componentWillMount() {
-      this.panResponder = PanResponder.create({
-        onMoveShouldSetPanResponder: () => true,
-        onPanResponderMove: this.handlePanResponderMove.bind(this),
-      });
+        this.panResponder = PanResponder.create({
+            onMoveShouldSetPanResponder: () => true,
+            onPanResponderMove: this.handlePanResponderMove.bind(this),
+        });
     }
 
     handlePanResponderMove(e, gestureState) {
@@ -61,11 +127,11 @@ const styles = {
         const {dx, dy} = gestureState;
         const sideLength = 200;
         const origin = {x: 0, y: 0, z: -sideLength / 2};
-        let matrix = this.rotateXY(dx, dy);
+        let matrix = this.rotateXY(dx/2, dy/2);
         // console.log(matrix)
         // from https://gist.github.com/jmurzy/0d62c0b5ea88ca806c16b5e8a16deb6a#file-foldview-transformutil-transformorigin-js
         this.transformOrigin(matrix, origin);
-        this.refView.setNativeProps({style: {transform: [{perspective: 1000}, {translateZ: -100}, {matrix3d: matrix}]}});
+        this.refView.setNativeProps({style: {transform: [{perspective: 600}, {translateZ: -85}, {matrix3d: matrix}]}});
     }
 
     rotateXY(dx, dy) {
@@ -138,18 +204,67 @@ const styles = {
         return holder
     }
   
+    tanInDegrees (degrees) {
+        return Math.tan(degrees * Math.PI / 180);
+    }
+
     render() {
       return (
-        <View style={styles.scene} {...this.panResponder.panHandlers} >
+        <View style={styles.scene} {...this.panResponder.panHandlers}>
+            {console.log(this.animatedValSecond)}
           <View ref={component => this.refView = component} style={styles.cube}>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 50}]}, {backgroundColor: 'pink', opacity: 0.8, borderRadius: 100}]}></View>
+            <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 50}]}, {backgroundColor: 'pink', opacity: 1, borderRadius: 100}]}>
+                {this.PomoClock()}
+            </View>
             <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 50}]}, {backgroundColor: 'gold', opacity: 0.8, borderRadius: 100}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'lightgreen', opacity: 0.8}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'skyblue', opacity: 0.8, height: 100,}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateX: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'dodgerblue', opacity: 0.8}]}></View>
-            <View style={[styles.cubeFace, {transform: [{rotateX: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'hotpink', opacity: 0.8}]}></View>
+
+            {
+                Array(this.state.numberOfSides).fill().map( (e,i) => {
+                    return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 100}]}, {borderColor: '#ededed', borderWidth: 2, backgroundColor: '#ededed', opacity: 1, width: 100, height: 200*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
+                })
+            }
+
+          </View>
+          <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5}}>
+                <Timer timer={1} color={this.state.color} setColor={(color)=>this.setState({color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
           </View>
         </View>
       );
     }
   }
+
+  const styles = {
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    scene: {
+        height: 200, 
+        width: 200, 
+        perspective: 600,
+        borderWidth: 1, borderColor: '#CCC', 
+        margin: 80,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },  
+    cube: {
+        height: 200, // or try '100%'
+        width: 200,
+        position: 'relative',
+        // backgroundColor: 'rgba(255,215,0,0.8)',
+        transformStyle: 'preserve-3d',
+        transform: [{translateZ: -100}],
+        transition: {transform: '1s'}, justifyContent: 'center', alignItems: 'center'
+    },
+    cubeFace: {
+        position: 'absolute',
+        height: 200,
+        width: 200,
+        borderWidth: 2, alignItems: 'center', justifyContent: 'center'
+    },
+    cubeText: {
+        fontSize: 40, fontWeight: 'bold',
+        color: 'white', lineHeight: 201// backgroundColor: 'orange',
+    }
+}
