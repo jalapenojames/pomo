@@ -7,7 +7,8 @@ import Pie from './components/Pie'
 import Pomo from './components/Pomo'
 
 export default function App() {
-  return (
-    <Pomo />
-  );
+
+    return (
+      <Pomo />
+    );
 }

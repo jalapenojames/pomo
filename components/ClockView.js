@@ -5,21 +5,22 @@ import Timer from './Timer'
 export default class ClockView extends Component {
     animatedValue = new Animated.Value(0)
     animatedValSecond = new Animated.Value(0)
+    firstUpdate = createRef(true)
+    funRef = createRef(null)
+
 
     state = {
-        numberOfSides: 22,
-        color: 'tomato'
+        numberOfSides: 200,
+        color: 'tomato',
+        secondsLeft: 60*this.props.timer,
+        sideEffect: false,
+        isRunning: false,
+        watchDate: null,
+        startDate: null
     }
         
         
     /////////////// ▾▾ Animate Clock things go here ▾▾ //////////////////////
-    // constructor(props) {
-    //     super(props)
-
-    //     this.animatedValue = new Animated.Value(0)
-    //     this.animatedValSecond = new Animated.Value(0)
-    // }
-
     LeftHalf({color, diameter}) {
         return (
             <View style={{height: diameter/2, width: diameter, overflow: 'hidden', transformOrigin: 'center bottom', transform: [{rotate: "-90deg"}], marginBottom: diameter/2}}>
@@ -54,7 +55,43 @@ export default class ClockView extends Component {
         )
     }
 
-    animation(min) {
+    LeftHalfTrial({color, diameter}) {
+        return (
+            <View style={{height: diameter/2, width: diameter, overflow: 'hidden', transformOrigin: 'center bottom', transform: [{rotate: "-90deg"}], marginBottom: diameter/2}}>
+                <Animated.View style={{height: diameter/2, width: diameter, overflow: 'hidden', backgroundColor: 'transparent', position: 'relative', transformOrigin: 'center bottom', transform: [
+                    {
+                        rotate: this.animatedValue.interpolate({
+                            inputRange: [0,0.5,1],
+                            outputRange: ['0deg', '90deg', '180deg']
+                        })
+                    }
+                ]}}>
+                    <View style={{height: diameter, width: diameter, backgroundColor: color, marginTop: 0, borderTopLeftRadius: diameter/2, borderTopRightRadius: diameter/2, }}/>
+                </Animated.View> 
+            </View>    
+        )
+    }
+
+    LeftHalf2ndTrial({color, diameter}) {
+        return (
+            <View style={{height: diameter/2, width: diameter, overflow: 'hidden', transformOrigin: 'center bottom', transform: [{rotate: "-90deg"}], marginBottom: diameter/2}}>
+                <Animated.View style={{height: diameter/2, width: diameter, overflow: 'hidden', backgroundColor: 'transparent', position: 'relative', transformOrigin: 'center bottom', transform: [
+                    {
+                        rotate: this.animatedValSecond.interpolate({
+                            inputRange: [0,0.5,1],
+                            outputRange: ['0deg', '90deg', '180deg']
+                        })
+                    }
+                ]}}>
+                    <View style={{height: diameter, width: diameter, backgroundColor: color, marginTop: 0, borderTopLeftRadius: diameter/2, borderTopRightRadius: diameter/2, }}/>
+                </Animated.View> 
+            </View>            
+        )
+    }
+
+    animation = (min) => {
+        // it cannot read this.animatedValue here
+        console.log("i'm in animation", this.animatedValue)
         return (
             Animated.sequence([
                 Animated.timing(this.animatedValue, {
@@ -85,7 +122,7 @@ export default class ClockView extends Component {
         )
     }
 
-    resetAnimation() {
+    resetAnimation = () => {
         this.animatedValue.setValue(0); 
         this.animatedValSecond.setValue(0)        
     }
@@ -124,13 +161,15 @@ export default class ClockView extends Component {
         // const x = `${-dy}deg`;
         // this.refView.setNativeProps({style: {transform: [{perspective: 1000}, {translateZ: -100}, {rotateX: x}, {rotateY: y}]}});
     
+
+
         const {dx, dy} = gestureState;
         const sideLength = 200;
         const origin = {x: 0, y: 0, z: -sideLength / 2};
-        let matrix = this.rotateXY(dx/2, dy/2);
+        let matrix = this.rotateXY(dx, dy);
         // console.log(matrix)
         // from https://gist.github.com/jmurzy/0d62c0b5ea88ca806c16b5e8a16deb6a#file-foldview-transformutil-transformorigin-js
-        this.transformOrigin(matrix, origin);
+        // this.transformOrigin(matrix, origin);
         this.refView.setNativeProps({style: {transform: [{perspective: 600}, {translateZ: -85}, {matrix3d: matrix}]}});
     }
 
@@ -209,27 +248,44 @@ export default class ClockView extends Component {
     }
 
     render() {
-      return (
-        <View style={styles.scene} {...this.panResponder.panHandlers}>
-            {console.log(this.animatedValSecond)}
-          <View ref={component => this.refView = component} style={styles.cube}>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 50}]}, {backgroundColor: 'pink', opacity: 1, borderRadius: 100}]}>
-                {this.PomoClock()}
-            </View>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 50}]}, {backgroundColor: 'gold', opacity: 0.8, borderRadius: 100}]}></View>
+        return (
+        <>
+            <View style={[styles.scene, {transform: [{scale: 2}]}]} {...this.panResponder.panHandlers}>
+                {console.log(this.animatedValSecond)}
+                <View ref={component => this.refView = component} style={styles.cube}>
+                <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 50}]}, {backgroundColor: '#e6e6e6', opacity: 1, borderRadius: 100}]}>
+                    {this.PomoClock()}
+                </View>
+                <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 50}]}, {backgroundColor: 'bisque', opacity: 0.99, borderRadius: 100}]}>
+                    <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5, transform: [{scale: 0.45}], backgroundColor: 'aliceblue'}}>
+                        <Timer timer={1} color={this.state.color} setColor={(color)=>this.setState({color: color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
+                    </View>     
+                </View>
 
-            {
-                Array(this.state.numberOfSides).fill().map( (e,i) => {
-                    return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 100}]}, {borderColor: '#ededed', borderWidth: 2, backgroundColor: '#ededed', opacity: 1, width: 100, height: 200*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
-                })
-            }
+                <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 49}]}, {backgroundColor: 'rgba(0,0,128,.6)', borderRadius: 130, height: 260, width: 260, borderWidth: 2, borderColor: 'rgba(0,0,128,.6)'}]}/>
 
-          </View>
-          <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5}}>
-                <Timer timer={1} color={this.state.color} setColor={(color)=>this.setState({color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
-          </View>
-        </View>
-      );
+                {
+                    Array(this.state.numberOfSides).fill().map( (e,i) => {
+                        return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 100}]}, {borderColor: 'rgba(0,0,128,.9)', borderWidth: 2, backgroundColor: '#ededed', opacity: 1, width: 100, height: 200*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
+                    })
+                }
+
+                {
+                    Array(200).fill().map( (e,i) => {
+                        return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 130}]}, {borderColor: 'rgba(0,0,128,.6)', borderWidth: 3, backgroundColor: '#ededed', opacity: 1, width: 100, height: 260*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
+                    })
+                }
+
+                </View>
+            </View>  
+
+            {/* <View style={[styles.cubeFace, {backgroundColor: 'gold', opacity: 0.99, borderRadius: 100, transform: [{scale: 1.8}]}]}>
+                <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5, transform: [{scale: 0.45}]}}>
+                    <Timer timer={1} color={this.state.color} setColor={(color)=>this.setState({color: color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
+                </View>   
+            </View>   */}
+        </>
+        );
     }
   }
 
@@ -243,7 +299,7 @@ export default class ClockView extends Component {
         height: 200, 
         width: 200, 
         perspective: 600,
-        borderWidth: 1, borderColor: '#CCC', 
+        borderWidth: 0, borderColor: '#CCC', 
         margin: 80,
         justifyContent: 'center',
         alignItems: 'center'
@@ -261,10 +317,30 @@ export default class ClockView extends Component {
         position: 'absolute',
         height: 200,
         width: 200,
-        borderWidth: 2, alignItems: 'center', justifyContent: 'center'
+        borderWidth: 0, alignItems: 'center', justifyContent: 'center'
     },
     cubeText: {
         fontSize: 40, fontWeight: 'bold',
         color: 'white', lineHeight: 201// backgroundColor: 'orange',
-    }
+    },
+    timerContainer: {
+        flexDirection: 'row'
+    },
+    button: {
+        padding: 3, borderWidth: 1, borderRadius: 5, marginBottom: 5
+    },
+    center: {
+        justifyContent: 'center', alignItems: 'center'
+    },
+    digits: {
+        height: 100, width: 100,
+        borderRadius: 10,
+        backgroundColor: 'skyblue',
+    },
+    counterText: {
+        fontSize: 15
+    },
+    count: {
+        backgroundColor: 'white', borderRadius: 5, padding: 5
+    }, 
 }

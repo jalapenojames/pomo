@@ -18,8 +18,6 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
  
     const startTimer = () => {
         const rn = new Date
-        setStart([rn.getHours(), rn.getMinutes(), rn.getSeconds()])
-        setWatch([rn.getHours(), rn.getMinutes(), rn.getSeconds()])
         setStartDate(rn)
         setWatchDate(rn)
 
@@ -92,6 +90,7 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
     }, [isRunning]);
 
     const convertClockToDigit = (clock) => {
+        clock = clock.slice(1)
         const strArr = clock.map(elem => {
             if(elem.toString().length===2)
                 return elem.toString()
@@ -151,7 +150,7 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
                         watchDate? 
                             convertClockToDigit(minusFullDate(watchDate,startDate) )
                         : 
-                            '00:00:00'
+                            '00:00'
                     }
                 </Text>
             </View>
@@ -175,9 +174,9 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
 
         </View>
 
-        <View style={styles.center}>
+        {/* <View style={styles.center}>
             <ResetButton />
-        </View>
+        </View> */}
 
         <View style={styles.center}>
             <TaskButtons />
@@ -213,7 +212,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row'
     },
     counterText: {
-        fontSize: 15
+        fontSize: 15, fontStyle: 'italic',
     },
     button: {
         padding: 3, borderWidth: 1, borderRadius: 5, marginBottom: 5

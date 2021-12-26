@@ -39,7 +39,7 @@ export default function Pomo() {
           flex: 1,
           backgroundColor: '#fff',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-around',
         },
         text: {
           borderWidth: 1,
@@ -78,34 +78,12 @@ export default function Pomo() {
     return (
         <>
             <View style={[styles.container,{flexDirection: 'row', justifyContent: 'space-around'}]}>
-                <View style={styles.container,{borderWidth: 0}}>
+                <View style={styles.container,{borderWidth: 1}}>
                     <Text style={styles.text}>Pomo work in progress!</Text>
-                    <AnimateClock />
+                    <ClockView timer={1}/>
                     <StatusBar style="auto" />
                 </View>
-                {/* <View style={styles.scene}>
-                    {console.log(pan.y)}
-                    <Animated.View style={[styles.cube, {transform: [{translateZ: -100}, {rotateY: `${25}deg`}]}]} {...panResponder.panHandlers}>
-                        <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 100}]}, {backgroundColor: 'pink', opacity: 0.8}]}><Text style={styles.cubeText}>front</Text></View>
-                        <View style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'lightgreen', opacity: 0.8}]}><Text style={styles.cubeText}>back</Text></View>
-                        <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 100}]}, {backgroundColor: 'gold', opacity: 0.8}]}><Text style={styles.cubeText}>right</Text></View>
-                        <View style={[styles.cubeFace, {transform: [{rotateY: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'skyblue', opacity: 0.8}]}><Text style={styles.cubeText}>left</Text></View>
-                        <View style={[styles.cubeFace, {transform: [{rotateX: '90deg'}, {translateZ: 100}]}, {backgroundColor: 'dodgerblue', opacity: 0.8}]}><Text style={styles.cubeText}>top</Text></View>
-                        <View style={[styles.cubeFace, {transform: [{rotateX: '-90deg'}, {translateZ: 100}]}, {backgroundColor: 'hotpink', opacity: 0.8}]}><Text style={styles.cubeText}>bottom</Text></View>
-                    </Animated.View>
-                </View> */}
 
-                <ClockView />
-
-                {/* <CubeView /> */}
-
-                {/* <View style={{height: 400, width: 400, borderRadius: 10, justifyContent: 'center', alignItems: 'center'}}>
-                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                        <Animated.View style={{ transform: [{translateX: pan.x},{translateY: pan.y}]}} {...panResponder.panHandlers}>
-                            <View style={{height: 100, width: 100, backgroundColor: 'red', borderRadius: 5}}></View>
-                        </Animated.View>
-                    </View>
-                </View> */}
                 
                 {/* <Pressable onPress={()=>setPersp(persp => {console.log(persp); return persp+200})} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable> */}
                 {/* <Pressable onPress={()=>setTransf([{translateZ: -100},{rotateX: '90deg'}])} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable> */}
