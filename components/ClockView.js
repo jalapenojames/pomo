@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Pressable, Animated, PanResponder, Easing } from 'react-native'
 import Timer from './Timer'
+import TimerDisplay from './TimerDisplay'
 
 export default class ClockView extends Component {
     animatedValue = new Animated.Value(0)
@@ -90,8 +91,6 @@ export default class ClockView extends Component {
     }
 
     animation = (min) => {
-        // it cannot read this.animatedValue here
-        console.log("i'm in animation", this.animatedValue)
         return (
             Animated.sequence([
                 Animated.timing(this.animatedValue, {
@@ -249,28 +248,32 @@ export default class ClockView extends Component {
 
     render() {
         return (
-        <>
+        <View style={{flex: 1}}>
             <View style={[styles.scene, {transform: [{scale: 2}]}]} {...this.panResponder.panHandlers}>
                 {console.log(this.animatedValSecond)}
                 <View ref={component => this.refView = component} style={styles.cube}>
                 <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 50}]}, {backgroundColor: '#e6e6e6', opacity: 1, borderRadius: 100}]}>
                     {this.PomoClock()}
                 </View>
-                <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 50}]}, {backgroundColor: 'bisque', opacity: 0.99, borderRadius: 100}]}>
+                <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 50}]}, {backgroundColor: 'gray', opacity: 0.99, borderRadius: 100}]}>
                     <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5, transform: [{scale: 0.45}], backgroundColor: 'aliceblue'}}>
                         <Timer timer={1} color={this.state.color} setColor={(color)=>this.setState({color: color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
                     </View>     
                 </View>
 
-                <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 49}]}, {backgroundColor: 'rgba(0,0,128,.6)', borderRadius: 130, height: 260, width: 260, borderWidth: 2, borderColor: 'rgba(0,0,128,.6)'}]}/>
+                {/* {Cover for clock FRONT} */}
+                <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 49.9}]}, {backgroundColor: 'rgba(0,0,128,.9)', borderRadius: 130, height: 260, width: 260, borderWidth: 2, borderColor: 'rgba(0,0,128,.6)'}]}/>
 
-                {
+                {/* {Cover for clock BACK} */}
+                <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 49.9}]}, {backgroundColor: 'rgba(0,0,128,.9)', opacity: 0.99, borderRadius: 130, height: 260, width: 260}]}/>
+
+                {/* INNER Cylinder */
                     Array(this.state.numberOfSides).fill().map( (e,i) => {
-                        return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 100}]}, {borderColor: 'rgba(0,0,128,.9)', borderWidth: 2, backgroundColor: '#ededed', opacity: 1, width: 100, height: 200*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
+                        return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 100}]}, {borderColor: 'white', borderWidth: 2, backgroundColor: '#ededed', opacity: 1, width: 100, height: 200*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
                     })
                 }
 
-                {
+                {/* OUTER Cylinder */
                     Array(200).fill().map( (e,i) => {
                         return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 130}]}, {borderColor: 'rgba(0,0,128,.6)', borderWidth: 3, backgroundColor: '#ededed', opacity: 1, width: 100, height: 260*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
                     })
@@ -279,12 +282,16 @@ export default class ClockView extends Component {
                 </View>
             </View>  
 
-            {/* <View style={[styles.cubeFace, {backgroundColor: 'gold', opacity: 0.99, borderRadius: 100, transform: [{scale: 1.8}]}]}>
-                <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5, transform: [{scale: 0.45}]}}>
-                    <Timer timer={1} color={this.state.color} setColor={(color)=>this.setState({color: color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
+            <View style={[styles.cubeFace, {borderRadius: 10, height: 400, width: 400, left: 0, top: -150, height: 60}]}>
+                <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5, backgroundColor: 'gray'}}>
+                    <TimerDisplay timer={1} color={this.state.color} setColor={(color)=>this.setState({color: color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
                 </View>   
-            </View>   */}
-        </>
+            </View>  
+
+            <View style={{height: 20, width: 20, borderRadius: 10, backgroundColor: 'black', position: 'absolute'}}>
+                <Text style={{position: 'absolute', fontSize: 10, top: -25}}>position absolute</Text>
+            </View>
+        </View>
         );
     }
   }
@@ -296,8 +303,8 @@ export default class ClockView extends Component {
       alignItems: 'center'
     },
     scene: {
-        height: 200, 
-        width: 200, 
+        height: 260, 
+        width: 260, 
         perspective: 600,
         borderWidth: 0, borderColor: '#CCC', 
         margin: 80,

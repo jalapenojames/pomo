@@ -1,10 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef } from 'react'
-import { StyleSheet, Text, View, Pressable, Animated, PanResponder } from 'react-native';
-import AnimateClock from './AnimateClock'
-import Timer from './Timer'
-import CubeView from './CubeView'
+import { StyleSheet, Text, View, Animated, PanResponder } from 'react-native';
 import ClockView from './ClockView'
+import CurrentClock from './CurrentClock'
 
 export default function Pomo() {
     const pan = useRef(new Animated.ValueXY()).current
@@ -37,7 +35,7 @@ export default function Pomo() {
     const styles = StyleSheet.create({
         container: {
           flex: 1,
-          backgroundColor: '#fff',
+          backgroundColor: '#e6e6e6',
           alignItems: 'center',
           justifyContent: 'space-around',
         },
@@ -79,11 +77,12 @@ export default function Pomo() {
         <>
             <View style={[styles.container,{flexDirection: 'row', justifyContent: 'space-around'}]}>
                 <View style={styles.container,{borderWidth: 1}}>
-                    <Text style={styles.text}>Pomo work in progress!</Text>
+                    {/* <Text style={styles.text}>Pomo work in progress!</Text> */}
                     <ClockView timer={1}/>
                     <StatusBar style="auto" />
                 </View>
 
+                <CurrentClock />
                 
                 {/* <Pressable onPress={()=>setPersp(persp => {console.log(persp); return persp+200})} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable> */}
                 {/* <Pressable onPress={()=>setTransf([{translateZ: -100},{rotateX: '90deg'}])} style={{height: 100, width: 100, backgroundColor: 'blue', borderRadius: 10}}></Pressable> */}
