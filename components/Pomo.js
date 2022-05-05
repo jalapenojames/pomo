@@ -78,11 +78,11 @@ export default function Pomo() {
     return (
         <>
             <View style={[styles.container,{flexDirection: 'row', justifyContent: 'space-around'}]}>
-                <View style={styles.container,{borderWidth: 0}}>
+                {/* <View style={[styles.container,{borderWidth: 0}]}>
                     <Text style={styles.text}>Pomo work in progress!</Text>
                     <AnimateClock />
                     <StatusBar style="auto" />
-                </View>
+                </View> */}
                 {/* <View style={styles.scene}>
                     {console.log(pan.y)}
                     <Animated.View style={[styles.cube, {transform: [{translateZ: -100}, {rotateY: `${25}deg`}]}]} {...panResponder.panHandlers}>

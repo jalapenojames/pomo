@@ -2,23 +2,20 @@ import React, { Component, createRef } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Pressable, Animated, PanResponder, Easing } from 'react-native'
 import Timer from './Timer'
 
+const randomID = () => Math.random().toString(36).substring(7);
+
 export default class ClockView extends Component {
     animatedValue = new Animated.Value(0)
     animatedValSecond = new Animated.Value(0)
 
     state = {
         numberOfSides: 22,
-        color: 'tomato'
+        color: 'tomato',
+		
+        x: 0, 
+		displayTimer: false,
     }
-        
-        
-    /////////////// ▾▾ Animate Clock things go here ▾▾ //////////////////////
-    // constructor(props) {
-    //     super(props)
-
-    //     this.animatedValue = new Animated.Value(0)
-    //     this.animatedValSecond = new Animated.Value(0)
-    // }
+    /////////////// ⬇️ Animate Clock things go here ⬇️ //////////////////////
 
     LeftHalf({color, diameter}) {
         return (
@@ -110,6 +107,16 @@ export default class ClockView extends Component {
         )
     }
     /////////////// ^^ Animate Clock things go here ^^ //////////////////////
+
+	componentDidMount() {
+		// let timer button appear
+		const mountId = randomID();
+        setInterval(() => {
+			console.log(`${mountId} | updating state`);
+			const state = this.state;
+			this.setState({ x: state.x + 100 });
+        }, 1000);
+	}
 
     componentWillMount() {
         this.panResponder = PanResponder.create({
@@ -209,27 +216,24 @@ export default class ClockView extends Component {
     }
 
     render() {
-      return (
-        <View style={styles.scene} {...this.panResponder.panHandlers}>
-            {console.log(this.animatedValSecond)}
-          <View ref={component => this.refView = component} style={styles.cube}>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 50}]}, {backgroundColor: 'pink', opacity: 1, borderRadius: 100}]}>
-                {this.PomoClock()}
-            </View>
-            <View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 50}]}, {backgroundColor: 'gold', opacity: 0.8, borderRadius: 100}]}></View>
-
-            {
-                Array(this.state.numberOfSides).fill().map( (e,i) => {
-                    return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 100}]}, {borderColor: '#ededed', borderWidth: 2, backgroundColor: '#ededed', opacity: 1, width: 100, height: 200*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
-                })
-            }
-
-          </View>
-          <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5}}>
-                <Timer timer={1} color={this.state.color} setColor={(color)=>this.setState({color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
-          </View>
-        </View>
-      );
+		return (
+			<View style={styles.scene} {...this.panResponder.panHandlers}>
+				<Text>ClockView</Text>
+				<Text>{this.state.x}</Text>
+				<View ref={component => this.refView = component} style={styles.cube}>
+					<View style={[styles.cubeFace, {transform: [{rotateY: '0deg'}, {translateZ: 50}]}, {backgroundColor: 'pink', opacity: 1, borderRadius: 100}]}>
+						{this.PomoClock()}
+					</View>
+					<View style={[styles.cubeFace, {transform: [{rotateY: '180deg'}, {translateZ: 50}]}, {backgroundColor: 'gold', opacity: 0.8, borderRadius: 100}]}></View>
+					{Array(this.state.numberOfSides).fill().map( (e,i) => {
+							return <View key={i+'side'} style={[styles.cubeFace, {transform: [{rotateY: '90deg'}, {rotateX: `${i*360/this.state.numberOfSides}deg`}, {translateZ: 100}]}, {borderColor: '#ededed', borderWidth: 2, backgroundColor: '#ededed', opacity: 1, width: 100, height: 200*this.tanInDegrees(360/this.state.numberOfSides/2)}]}></View>
+						})}
+				</View>
+				<View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5}}>
+					<Timer timer={1} color={this.state.color} setColor={(color)=>this.setState({color})} animation={this.animation} resetAnimation={this.resetAnimation} animatedValSecond={this.animatedValSecond} animatedValue={this.animatedValue}/>
+				</View>
+			</View>
+		);
     }
   }
 

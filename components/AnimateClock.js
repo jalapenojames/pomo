@@ -90,6 +90,7 @@ const AnimateClock = () => {
 
     return (
         <>
+            <Text>Animate Clock</Text>
             <View style={{borderWidth: 1, margin: 10, padding: 10, borderRadius: 5}}>
                 <Timer timer={1} color={color} setColor={setColor} animation={animation} resetAnimation={resetAnimation} animatedValSecond={animatedValSecond} animatedValue={animatedValue}/>
             </View>
