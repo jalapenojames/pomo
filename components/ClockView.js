@@ -4,6 +4,8 @@ import Timer from './Timer'
 import TimerDisplay from './TimerDisplay'
 import MineeTimer from './MineeTimer'
 
+const randomID = () => Math.random().toString(36).substring(7);
+
 export default class ClockView extends Component {
     animatedValue = new Animated.Value(0)
     animatedValSecond = new Animated.Value(0)
@@ -26,6 +28,7 @@ export default class ClockView extends Component {
         
         
     /////////////// ▾▾ Animate Clock things go here ▾▾ //////////////////////
+
     LeftHalf({color, diameter}) {
         return (
             <View style={{height: diameter/2, width: diameter, overflow: 'hidden', transformOrigin: 'center bottom', transform: [{rotate: "-90deg"}], marginBottom: diameter/2}}>
@@ -161,6 +164,16 @@ export default class ClockView extends Component {
         )
     }
     /////////////// ^^ Animate Clock things go here ^^ //////////////////////
+
+	componentDidMount() {
+		// let timer button appear
+		const mountId = randomID();
+        setInterval(() => {
+			console.log(`${mountId} | updating state`);
+			const state = this.state;
+			this.setState({ x: state.x + 100 });
+        }, 1000);
+	}
 
     componentWillMount() {
         this._animatedValue = new Animated.ValueXY()
