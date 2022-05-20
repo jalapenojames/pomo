@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity} from 'react-native'
+import { IconButton } from 'react-native-paper';
 
-const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValSecond, animatedValue }) => {
+const TimerDisplay = ({ timer, color, setColor, animation, resetAnimation, animatedValSecond, animatedValue }) => {
     const [count, setCount] = useState([0,1,0])
 
     const [secondsLeft, setSecondsLeft] = useState(60*timer)
@@ -33,6 +34,8 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
        if (isRunning && funRef.current !== null) {
           setIsRunning(false);
        }
+
+       resetAnimation()
     };
 
     const resetTimer = () => {
@@ -98,8 +101,13 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
                 return '0'+elem.toString()
         })
 
-        return strArr.join(":")
+        return strArr
     }
+
+    const convertDigitToTextComponent = (digit) => {
+
+        return <Text style={styles.counterText} >{digit[0]}:{digit[1]}</Text>
+    }  
 
     useEffect(()=>{
         if(!firstUpdate.current) {
@@ -118,7 +126,7 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
         </View>
 
     const TaskButtons = () =>
-        <View style={{height: 80, width: 150, justifyContent: 'space-around', alignItems: 'center', borderWidth: 1, borderRadius: 5, margin: 10}}>
+        <View style={{height: 100, width: 200, justifyContent: 'space-around', alignItems: 'center', borderWidth: 1, borderRadius: 5, margin: 10}}>
             <TouchableOpacity activeOpacity={0.8} onPress={()=>{setSecondsLeft(60*25); setColor('tomato'); setSideEffect(!sideEffect)}} style={{height: 30, width: 120, borderRadius: 5, backgroundColor: 'teal', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
                 <Text style={{backgroundColor: 'white', height: 15, width: 50, textAlign: 'center', textAlignVertical: 'center', fontStyle: 'italic', borderRadius: 3}}>focus</Text>
                 <Text style={{backgroundColor: 'white', height: 15, width: 20, textAlign: 'center', textAlignVertical: 'center', borderRadius: 3}}>25</Text>
@@ -130,73 +138,51 @@ const Timer = ({ timer, color, setColor, animation, resetAnimation, animatedValS
         </View>
 
     return (
-        <View style={{backgroundColor: 'brown', transform: [{scale: .5}], borderWidth: 5, borderRadius: 5,}}>
-            <View style={styles.timerContainer}>
-                <View style={[styles.buttonContainer, styles.center]}>
-                    <TouchableOpacity onPress={startTimer} activeOpacity={0.8} style={[styles.button,{marginRight: 5, backgroundColor: 'green'}]}>
-                        <Text style={{color: 'white'}}>start</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={stopTimer} activeOpacity={0.8} style={[styles.button, {marginRight: 5, backgroundColor: 'salmon'}]}>
-                        <Text style={{color: 'black'}}>stop</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={resetTimer} activeOpacity={0.8} style={[styles.button, {backgroundColor: '#023e8a'}]}>
-                        <Text style={{color: 'white'}}>reset</Text>
-                    </TouchableOpacity>
-                </View>
+        <>
+        <View style={styles.timerContainer}>
+            <TouchableOpacity onPress={()=>console.log('pause')} activeOpacity={0.8} style={[styles.button, styles.center,{backgroundColor: 'orange',marginRight: 5, flexDirection: 'row', width: 30},]}>
+                <View style={{height: 15, width: 5, backgroundColor: '#663399', borderRadius: 3}}/>
+                <View style={{height: 5, width: 2, backgroundColor: 'transparent'}}/>
+                <View style={{height: 15, width: 5, backgroundColor: '#663399', borderRadius: 3}}/>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={startTimer} activeOpacity={0.8} style={[styles.button,{backgroundColor: 'green', justifyContent: 'center', marginRight: 5}]}>
+                <Text style={{textAlign: 'center', color: 'white' }}>start</Text>
+            </TouchableOpacity>
 
-                <View style={[styles.digits, styles.center]}>
-                    <Text style={styles.counterText}>
-                        {
-                            watchDate? 
-                                convertClockToDigit(minusFullDate(watchDate,startDate) )
-                            : 
-                                '00:00'
-                        }
-                    </Text>
-                </View>
-
-                <View style={[styles.countContainer, styles.center]}>
-                    <Text>Timer</Text>
-                    <Text style={styles.count}>
-                        {
-                            watchDate? 
-                                Math.trunc((secondsLeft-minusFullDateSeconds(watchDate,startDate))/60)
-                                :
-                                Math.trunc(secondsLeft/60)
-                        }
-                    </Text>
-                </View>
-
-                <View style={[styles.countContainer, styles.center, {justifyContent: 'space-around'}]}>
-                    <TouchableOpacity onPress={()=>setSecondsLeft(secondsLeft+60*20)} style={{height: 25, width: 40, borderRadius: 5, backgroundColor: "bisque", paddingTop: 2}}><Text style={{textAlign: 'center'}}>^</Text></TouchableOpacity>
-                    <TouchableOpacity onPress={()=>setSecondsLeft(secondsLeft-60*20)} style={{height: 25, width: 40, borderRadius: 5, backgroundColor: "bisque", paddingTop: 2, transform: [{rotate: '180deg'}]}}><Text style={{textAlign: 'center'}}>^</Text></TouchableOpacity>                
-                </View>
-
-            </View>
-
-            {/* <View style={styles.center}>
-                <ResetButton />
-            </View> */}
-
-            <View style={styles.center}>
-                <TaskButtons />
-            </View>
-
-
-            { // this section stops the clock when timer reaches 0
-                    watchDate? 
-                        minusFullDateSeconds(watchDate,startDate)-secondsLeft>=0?
-                            (()=>{clearInterval(funRef.current);resetTimer()})()
-                            :
-                            (()=>{})()
+            <View style={[styles.digits, styles.center, {marginRight: 5}]}>
+                {/* <Text style={styles.counterText}> */}
+                    {
+                        watchDate? 
+                            convertDigitToTextComponent(convertClockToDigit(minusFullDate(watchDate,startDate)))
                         : 
-                        console.log()
-                }
+                            convertDigitToTextComponent(['00','00'])
+                    }
+                {/* </Text> */}
+            </View>
+
+            <TouchableOpacity onPress={stopTimer} activeOpacity={0.8} style={[styles.button, {backgroundColor: 'salmon', justifyContent: 'center'}]}>
+                <Text style={{textAlign: 'center', color: 'black' }}>stop</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={resetTimer} activeOpacity={0.8} style={[styles.button, {backgroundColor: '#023e8a', justifyContent: 'center', alignSelf: 'center', height: 30, transform: [{rotate: '90deg'}]}]}>
+                <IconButton icon="autorenew" size={20} color="skyblue"/> 
+            </TouchableOpacity>
         </View>
+
+
+        { // this section stops the clock when timer reaches 0
+                watchDate? 
+                    minusFullDateSeconds(watchDate,startDate)-secondsLeft>=0?
+                        (()=>{clearInterval(funRef.current);resetTimer()})()
+                        :
+                        (()=>{})()
+                    : 
+                    console.log()
+            }
+        </>
     )
 }
 
-export default Timer
+export default TimerDisplay
 
 const styles = StyleSheet.create({
     countContainer: {
@@ -209,24 +195,22 @@ const styles = StyleSheet.create({
         backgroundColor: 'white', borderRadius: 5, padding: 5
     },   
     timerContainer: {
-        flexDirection: 'row',
-    },
-    buttonContainer: {
-        flexDirection: 'column', 
-        padding: 5,
+        flexDirection: 'row', alignItems: 'center',
     },
     counterText: {
-        fontSize: 25,
-        color: 'white', 
-        fontWeight: 'bold'
+        fontSize: 45, fontStyle: 'italic',
     },
     button: {
+        height: 50, width: 50,
         padding: 3, borderWidth: 1, borderRadius: 5, marginBottom: 5
     },
+    buttonContainer: {
+        flexDirection: 'column', padding: 5
+    },
     digits: {
-        height: 100, width: 100,
+        height: 70, width: 150,
         borderRadius: 10,
-        backgroundColor: 'gray',
+        backgroundColor: 'lightgray',
     },
     center: {
         justifyContent: 'center', alignItems: 'center'
